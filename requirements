@@ -1,0 +1,50 @@
+Websockets
+
+RTC Relay for networking
+	-Ice and Stun Server, no turn
+	-Displays Groups of Users
+	-Display a User
+		-Has MetaData of RTC Application Making the request
+	-Groups
+		-Password Protected
+		-Permission Based
+
+Remote Application Deliverer
+	-As if it was local except it is not.
+
+Package Manager
+-Packages are mainly meant to be stored on github
+-You may publish your application which would
+	-Make a post request to the server
+	-Sends your window.json
+	-Server Verifies the git repository exists
+		-If not return rejected "Needs a Git Repository"
+	-View Raw window.json from the git repository
+	-Verify both a the same
+		-If not return rejected "Make sure your Git Repository is up to date"
+	[main, icon].each
+		-Verify it has an $X
+			-If not return rejected "Apps are required to have a $X"
+		-Verify that the $X.url is a local url
+			-If not return rejected "Apps cannot be remote"
+		-Verify that the $X.url would exist if requested
+			-If not return rejected "$X.url Does not exist for $X"
+	-Check if it has a package.json
+		-dependences.each
+			-Check if $X exists
+				-if not return rejected "Node Module $X Does not exist"
+	-Check if it has a package.json
+		-dependences.each
+			-Check if $X exists
+				-if not return rejected "Bower Module $X Does not exist"
+	-Check if the app has a server script
+		-If yes Check if it can be run without permissions
+			-if not return rejected "Users give permissions on a need basis"
+		-If the application times out
+			-return rejected "Your application did not return anything"
+		-If the application continues to grab resources
+			-return rejected "Your application is may have a leak"
+	-Add it to MongoDB
+
+			
+

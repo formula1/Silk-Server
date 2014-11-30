@@ -1,0 +1,14 @@
+{
+  "name": "silk-server",
+  "version": "0.0.1",
+  "description": "Server for a Silk Environment",
+  "author": "formula1",
+  "license": "MIT",
+	"dependencies":{
+		"ws":"latest"
+	},
+  "scripts": {
+    "tunnel": "node tunnel-server"
+  }
+}
+
