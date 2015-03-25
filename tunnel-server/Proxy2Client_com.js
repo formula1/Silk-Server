@@ -34,8 +34,15 @@ function ProxyServer(httpport,websocketport,serversocketport){
   })
   this.locals = {};
   this.users = {};
+  
+
+  // Create an HTTP tunneling proxy
+  this.http = http.createServer(this.httpReq.bind(this));
+
+  this.http.listen(httpport);
+
   this.wss = new WebSocketServer({
-    port: websocketport,
+    server: this.http,
     verifyClient:function(info){
       var cook = parseCookies(info.req);
       console.log("cook? " + JSON.stringify(cook));
@@ -55,11 +62,6 @@ function ProxyServer(httpport,websocketport,serversocketport){
 
   console.log("web socket is at: " + this.wss.options.host + ":" + this.wss.options.port);
 
-
-  // Create an HTTP tunneling proxy
-  this.http = http.createServer(this.httpReq.bind(this));
-
-  this.http.listen(httpport);
 
   this.wss.on('connection', function (ws) {
 
