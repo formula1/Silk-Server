@@ -30,7 +30,7 @@ function ProxyServer(httpport,websocketport,serversocketport){
   MessageProxy.call(this,function(message,ws){
     that.ws[message.id].send(JSON.stringify(message));
   },function(message,con){
-    con.write(JSON.stringify(message)+"\u00B6")
+    con.send(JSON.stringify(message)+"\u00B6")
   })
   this.locals = {};
   this.users = {};
@@ -64,7 +64,7 @@ function ProxyServer(httpport,websocketport,serversocketport){
 
 
   this.wss.on('connection', function (ws) {
-
+    console.log('ws connection');
     ws.on('close',function(){
       console.log("disconnect");
       /*
@@ -85,9 +85,22 @@ function ProxyServer(httpport,websocketport,serversocketport){
       }catch(e){
         return ws.close();
       }
-      message.protocol = "ws";
-      that.ws[message.id] = ws;
-      that.clientMessage(message,ws);
+      if(message.cmd && message.cmd === "remoteTunnel-add"){
+        that.slaveEnter(ws);
+        ws.removeAllListeners("message");
+        ws.removeAllListeners("close");
+        ws.on('close', function () {
+          that.slaveLeave(ws);
+        });
+        ws.on('message', function (data) {
+          that.handleSocketMessage(data, ws);
+        })
+
+      } else {
+        message.protocol = "ws";
+        that.ws[message.id] = ws;
+        that.clientMessage(message,ws);
+      }
     });
   });
 
